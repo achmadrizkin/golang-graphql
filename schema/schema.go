@@ -9,10 +9,11 @@ import (
 
 type PersonSchema struct {
 	personUseCase domain.PersonUseCase
+	carUseCase    domain.CarUseCase
 }
 
-func NewPersonSchema(personUseCase domain.PersonUseCase) *PersonSchema {
-	return &PersonSchema{personUseCase: personUseCase}
+func NewPersonSchema(personUseCase domain.PersonUseCase, carUseCase domain.CarUseCase) *PersonSchema {
+	return &PersonSchema{personUseCase: personUseCase, carUseCase: carUseCase}
 }
 
 func (a *PersonSchema) DefineQueryType(personType *graphql.Object) *graphql.Object {
@@ -34,7 +35,7 @@ func (a *PersonSchema) DefineQueryType(personType *graphql.Object) *graphql.Obje
 	})
 }
 
-func (a *PersonSchema) DefineMutationType(personType *graphql.Object) *graphql.Object {
+func (a *PersonSchema) DefineMutationType(personType *graphql.Object, carType *graphql.Object) *graphql.Object {
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name: "Mutation",
 		Fields: graphql.Fields{
@@ -50,8 +51,39 @@ func (a *PersonSchema) DefineMutationType(personType *graphql.Object) *graphql.O
 				},
 				Resolve: a.createPersonResolver(), // Change this line
 			},
+			"createCar": &graphql.Field{
+				Type: carType,
+				Args: graphql.FieldConfigArgument{
+					"person_id": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.Int),
+					},
+					"name": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.String),
+					},
+					"color": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.String),
+					},
+				},
+				Resolve: a.createCarResolver(), // Change this line
+			},
 		},
 	})
+}
+
+func (a *PersonSchema) createCarResolver() graphql.FieldResolveFn {
+	return func(p graphql.ResolveParams) (interface{}, error) {
+		name, _ := p.Args["name"].(string)
+		person_id, _ := p.Args["person_id"].(int)
+		color, _ := p.Args["color"].(string)
+
+		car := model.Car{Name: name, Color: color, Person_Id: person_id}
+		carData, err := a.carUseCase.CreateCar(car)
+		if err != nil {
+			return carData, err
+		}
+
+		return carData, nil
+	}
 }
 
 func (a *PersonSchema) getAllPersonResolver() graphql.FieldResolveFn {

@@ -30,14 +30,17 @@ func main() {
 	log.Println("SUCCESS CONNECT DB AND MIGRATE")
 
 	personRepo := repo.NewPersonRepo(db)
+	carRepo := repo.NewCarRepo(db)
+	carUseCase := usecase.NewCarUseCase(carRepo)
 	personUseCase := usecase.NewPersonUseCase(personRepo)
-	personShcema := schema.NewPersonSchema(personUseCase)
+	personShcema := schema.NewPersonSchema(personUseCase, carUseCase)
 
 	log.Println("SUCCESS CONNECT PersonSchema")
 
 	// GraphQL setup
 	personModelGraphql := model.DefinePersonType()
-	mutationType := personShcema.DefineMutationType(personModelGraphql)
+	carModelGraphql := model.DefineCarType()
+	mutationType := personShcema.DefineMutationType(personModelGraphql, carModelGraphql)
 	queryType := personShcema.DefineQueryType(personModelGraphql)
 
 	log.Println("SUCCESS CONNECT GraphQL setup")
