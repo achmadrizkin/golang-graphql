@@ -37,8 +37,8 @@ func main() {
 
 	// GraphQL setup
 	personModelGraphql := model.DefinePersonType()
-	mutationType := personShcema.DefineMutationPersonType(personModelGraphql)
-	queryType := personShcema.DefineQueryPersonType(personModelGraphql)
+	mutationType := personShcema.DefineMutationType(personModelGraphql)
+	queryType := personShcema.DefineQueryType(personModelGraphql)
 
 	log.Println("SUCCESS CONNECT GraphQL setup")
 

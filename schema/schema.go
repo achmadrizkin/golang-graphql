@@ -15,7 +15,7 @@ func NewPersonSchema(personUseCase domain.PersonUseCase) *PersonSchema {
 	return &PersonSchema{personUseCase: personUseCase}
 }
 
-func (a *PersonSchema) DefineQueryPersonType(personType *graphql.Object) *graphql.Object {
+func (a *PersonSchema) DefineQueryType(personType *graphql.Object) *graphql.Object {
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name: "Query",
 		Fields: graphql.Fields{
@@ -34,7 +34,7 @@ func (a *PersonSchema) DefineQueryPersonType(personType *graphql.Object) *graphq
 	})
 }
 
-func (a *PersonSchema) DefineMutationPersonType(personType *graphql.Object) *graphql.Object {
+func (a *PersonSchema) DefineMutationType(personType *graphql.Object) *graphql.Object {
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name: "Mutation",
 		Fields: graphql.Fields{
