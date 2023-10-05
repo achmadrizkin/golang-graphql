@@ -17,3 +17,8 @@ func NewPersonUseCase(personRepo domain.PersonRepo) domain.PersonUseCase {
 func (p *personUseCase) CreatePerson(person model.Person) (model.Person, error) {
 	return p.personRepo.CreatePerson(person)
 }
+
+// GetAllPerson implements domain.PersonUseCase.
+func (p *personUseCase) GetAllPerson() ([]model.Person, error) {
+	return p.personRepo.GetAllPerson()
+}

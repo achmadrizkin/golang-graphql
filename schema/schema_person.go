@@ -26,6 +26,10 @@ func (a *PersonSchema) DefineQueryPersonType(personType *graphql.Object) *graphq
 					return "Hello, world!", nil // You can return any value
 				},
 			},
+			"getAllPerson": &graphql.Field{
+				Type:    graphql.NewList(personType), // Use graphql.NewList to specify a list type
+				Resolve: a.getAllPersonResolver(),
+			},
 		},
 	})
 }
@@ -48,6 +52,17 @@ func (a *PersonSchema) DefineMutationPersonType(personType *graphql.Object) *gra
 			},
 		},
 	})
+}
+
+func (a *PersonSchema) getAllPersonResolver() graphql.FieldResolveFn {
+	return func(p graphql.ResolveParams) (interface{}, error) {
+		personData, err := a.personUseCase.GetAllPerson()
+		if err != nil {
+			return personData, err
+		}
+
+		return personData, nil
+	}
 }
 
 func (a *PersonSchema) createPersonResolver() graphql.FieldResolveFn {
