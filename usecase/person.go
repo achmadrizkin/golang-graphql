@@ -22,3 +22,8 @@ func (p *personUseCase) CreatePerson(person model.Person) (model.Person, error) 
 func (p *personUseCase) GetAllPerson() ([]model.Person, error) {
 	return p.personRepo.GetAllPerson()
 }
+
+// GetAllPersonWithCar implements domain.PersonUseCase.
+func (p *personUseCase) GetAllPersonWithCar() ([]model.PersonWithCar, error) {
+	return p.personRepo.GetAllPersonWithCar()
+}

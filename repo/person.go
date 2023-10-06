@@ -33,3 +33,16 @@ func (p *personRepo) CreatePerson(person model.Person) (model.Person, error) {
 
 	return person, nil
 }
+
+func (p *personRepo) GetAllPersonWithCar() ([]model.PersonWithCar, error) {
+	var peopleWithCars []model.PersonWithCar
+
+	if err := p.db.Table("people").
+		Select("people.id AS PersonId, people.name AS person_name, people.age AS person_age, cars.name AS car_name, cars.color AS car_color").
+		Joins("LEFT JOIN cars ON people.id = cars.person_id").
+		Scan(&peopleWithCars).Error; err != nil {
+		return nil, err
+	}
+
+	return peopleWithCars, nil
+}

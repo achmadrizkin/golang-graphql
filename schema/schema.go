@@ -16,7 +16,7 @@ func NewPersonSchema(personUseCase domain.PersonUseCase, carUseCase domain.CarUs
 	return &PersonSchema{personUseCase: personUseCase, carUseCase: carUseCase}
 }
 
-func (a *PersonSchema) DefineQueryType(personType *graphql.Object) *graphql.Object {
+func (a *PersonSchema) DefineQueryType(personType *graphql.Object, personWithCar *graphql.Object) *graphql.Object {
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name: "Query",
 		Fields: graphql.Fields{
@@ -30,6 +30,10 @@ func (a *PersonSchema) DefineQueryType(personType *graphql.Object) *graphql.Obje
 			"getAllPerson": &graphql.Field{
 				Type:    graphql.NewList(personType), // Use graphql.NewList to specify a list type
 				Resolve: a.getAllPersonResolver(),
+			},
+			"getAllPersonWithCar": &graphql.Field{
+				Type:    graphql.NewList(personWithCar), // Use graphql.NewList to specify a list type
+				Resolve: a.getAllPersonWithCarResolver(),
 			},
 		},
 	})
@@ -68,6 +72,17 @@ func (a *PersonSchema) DefineMutationType(personType *graphql.Object, carType *g
 			},
 		},
 	})
+}
+
+func (a *PersonSchema) getAllPersonWithCarResolver() graphql.FieldResolveFn {
+	return func(p graphql.ResolveParams) (interface{}, error) {
+		personWithCarData, err := a.personUseCase.GetAllPersonWithCar()
+		if err != nil {
+			return personWithCarData, err
+		}
+
+		return personWithCarData, nil
+	}
 }
 
 func (a *PersonSchema) createCarResolver() graphql.FieldResolveFn {

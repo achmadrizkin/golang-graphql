@@ -12,6 +12,27 @@ type Person struct {
 	*gorm.Model
 }
 
+type PersonWithCar struct {
+	PersonId   int // GORM will use "person_id" as the column name
+	PersonName string
+	PersonAge  int
+	CarName    string
+	CarColor   string
+}
+
+func DefinePersonWithCarType() *graphql.Object {
+	return graphql.NewObject(graphql.ObjectConfig{
+		Name: "PersonWithCar",
+		Fields: graphql.Fields{
+			"PersonId":   &graphql.Field{Type: graphql.Int},
+			"PersonName": &graphql.Field{Type: graphql.String},
+			"PersonAge":  &graphql.Field{Type: graphql.Int},
+			"CarName":    &graphql.Field{Type: graphql.String},
+			"CarColor":   &graphql.Field{Type: graphql.String},
+		},
+	})
+}
+
 func DefinePersonType() *graphql.Object {
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name: "Person",
